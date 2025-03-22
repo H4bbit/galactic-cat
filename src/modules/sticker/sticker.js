@@ -9,7 +9,6 @@ const { exec } = require("child_process");
 const execProm = util.promisify(exec);
 const webpmux = require("node-webpmux");
 
-const { getFileBuffer } = require("../../utils/functions");
 
 const tempDir = path.join(__dirname, "..", "..", "temp");
 if (!fs.existsSync(tempDir)) {
@@ -73,6 +72,7 @@ async function processSticker(client, info, sender, from, text, isMedia, isQuote
         await execProm(`"${webpmuxPath}" -set exif "${metaPath}" "${outputPath}" -o "${outputPath}"`);
         fs.unlinkSync(metaPath);
 */
+        //usando node-webpmux evita o erro de nao encontrar o webpmux no sistema
         const webp = new webpmux.Image();
         await webp.load(outputPath);
         webp.exif = exifBuffer;

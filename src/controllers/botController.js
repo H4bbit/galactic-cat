@@ -17,6 +17,7 @@ const axios = require("axios");
 const { generateAIContent } = require(path.join(__dirname, "../modules/gemini/geminiModel"));
 
 const { processSticker } = require(path.join(__dirname, "../modules/sticker/sticker"));
+const { processImage } = require(path.join(__dirname, "../modules/media/toimage"));
 const { getFileBuffer } = require(path.join(__dirname, "../utils/functions"));
 const { downloadYoutubeAudio, downloadYoutubeVideo } = require(path.join(__dirname, "../modules/youtube/youtube"));
 const { getVideoInfo } = require(path.join(__dirname, "../modules/youtube/index"));
@@ -63,7 +64,7 @@ async function handleWhatsAppUpdate(upsert, client) {
         const sender = isGroup ? info.key.participant : info.key.remoteJid;
         const expirationMessage = getExpiration(info) === null ? null : getExpiration(info);
 
-        const { type, body, isMedia } = preProcessMessage(info);
+        const { type, body, isMedia, isSticker } = preProcessMessage(info);
         const prefixResult = processPrefix(body, config.prefix);
         console.log(prefixResult);
         if (!prefixResult) continue;
@@ -154,6 +155,13 @@ async function handleWhatsAppUpdate(upsert, client) {
                     }
                 }
                 break;
+
+            case "stickertoimage":
+            case "stoimg":
+            case "toimg": {
+                await processImage(client, info, sender, from, isSticker, isQuotedSticker, config, getFileBuffer);
+                break;
+            }
 
             case "sticker":
             case "s": {

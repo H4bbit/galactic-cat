@@ -10,8 +10,9 @@ function preProcessMessage(info) {
   // Alterado: lista de tipos de mídia adicionais
   const mediaTypes = ["imageMessage", "videoMessage", "audioMessage", "documentMessage", "stickerMessage", "contactMessage", "locationMessage", "productMessage"];
   const isMedia = mediaTypes.includes(type);
+  const isSticker = type === "stickerMessage";
 
-  return { type, body: finalBody, isMedia };
+  return { type, body: finalBody, isMedia ,isSticker};
 }
 
 function processPrefix(body, prefixes) {
